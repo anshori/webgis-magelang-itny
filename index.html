@@ -28,6 +28,19 @@
 				width: 100%;
 				margin: 0px;
 			}
+
+			.info {
+				padding: 6px 8px;
+				font: 14px/16px Arial, Helvetica, sans-serif;
+				background: rgba(186, 215, 142, 0.8);
+				box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+				border-radius: 5px;
+				color: rgb(68, 68, 68);
+			}
+			.info h2 {
+				margin: 0 0 5px;
+				color: rgb(39, 39, 39);
+			}
 		</style>
 	</head>
 
@@ -165,13 +178,25 @@
 				map.addLayer(pendidikan); //pendidikan ditampilkan ketika halaman dipanggil
 			});
 
+			var title = new L.Control();
+			title.onAdd = function (map) {
+				this._div = L.DomUtil.create("div", "info");
+				this.update();
+				return this._div;
+			};
+			title.update = function () {
+				this._div.innerHTML =
+					"<h2>Peta Studio Kawasan</h2>Kota Magelang, Jawa Tengah";
+			};
+			title.addTo(map);
+
 			var baseMaps = {
 				//list basemap
 				"Open Street Map": basemap,
 			};
 			var Layers = {
 				//list layer
-				"Pendidikan": pendidikan,
+				Pendidikan: pendidikan,
 				"Jalan Utama": jalanutama,
 				"Batas Desa Magelang": batasdesamagelang,
 			};
@@ -179,6 +204,35 @@
 				collapsed: false,
 			});
 			layerControl.addTo(map);
+
+			L.control
+				.scale({
+					maxWidth: 150,
+					imperial: false,
+					position: "bottomright",
+				})
+				.addTo(map);
+
+			L.Control.Watermark = L.Control.extend({
+				onAdd: function (map) {
+					var img = L.DomUtil.create("img");
+					img.src =
+						"https://itny.ac.id/wp-content/uploads/2019/03/logo-itny21.png"; //Image URL
+					img.style.width = "200px"; //Image Size
+					img.style.background = "rgba(0, 0, 0, 0.5)";
+					img.style.padding = "5px";
+					return img;
+				},
+				onRemove: function (map) {
+					// Nothing to do here
+				},
+			});
+			L.control.watermark = function (opts) {
+				return new L.Control.Watermark(opts);
+			};
+			L.control.watermark({ position: "bottomleft" }).addTo(map);
+
+			
 		</script>
 	</body>
 </html>
